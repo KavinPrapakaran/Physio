@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REE Forma</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% if current_user %}
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand-lockup" href="{{ url_for('dashboard') }}" aria-label="REE Forma clinic dashboard">
+                <img src="{{ url_for('static', filename='ree-forma-logo.svg') }}" alt="REE Forma Physiotherapy and Wellness Clinic">
+            </a>
+            <nav>
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                {% if has_permission('patient_view') %}<a href="{{ url_for('patients') }}">Patients</a>{% endif %}
+                {% if has_permission('appointment_view') %}<a href="{{ url_for('appointments') }}">Appointments</a>{% endif %}
+                {% if has_permission('assessment_view') %}<a href="{{ url_for('assessments') }}">Assessments</a>{% endif %}
+                {% if has_permission('treatment_view') %}<a href="{{ url_for('treatments') }}">Treatments</a>{% endif %}
+                {% if has_permission('package_view') %}<a href="{{ url_for('packages') }}">Packages</a>{% endif %}
+                {% if has_permission('billing_view') %}<a href="{{ url_for('billing') }}">Billing</a>{% endif %}
+                {% if has_permission('payment_view') %}<a href="{{ url_for('payments') }}">Payments</a>{% endif %}
+                {% if has_permission('reports_view') %}<a href="{{ url_for('reports') }}">Reports</a>{% endif %}
+                {% if has_permission('staff_management') %}<a href="{{ url_for('staff_list') }}">Staff</a>{% endif %}
+                {% if has_permission('staff_management') %}<a href="{{ url_for('audit_logs') }}">Audit Logs</a>{% endif %}
+                {% if has_permission('reports_export') %}<a href="{{ url_for('backup_database') }}">Backup</a>{% endif %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <header class="topbar">
+                <div>
+                    <h1>REE FORMA CLINIC MANAGEMENT</h1>
+                </div>
+                <div class="user-pill">{{ current_user.full_name }}</div>
+            </header>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% else %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-stack login-flash">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% block auth_content %}{% endblock %}
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <h2>Staff Management</h2>
+    {% if has_permission('staff_management') %}<a class="primary-btn" href="{{ url_for('new_staff') }}">Add Staff</a>{% endif %}
+</div>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Username</th><th>Department</th><th>Treatment</th></tr></thead>
+        <tbody>
+            {% for user in staff %}
+            <tr>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.role.name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.department or '-' }}</td>
+                <td><a href="{{ url_for('edit_staff', user_id=user.id) }}">Edit</a> | <a href="{{ url_for('staff_permissions', user_id=user.id) }}">Permissions</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

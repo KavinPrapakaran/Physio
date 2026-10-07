@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ form_title }}</h2>
+</div>
+<form method="post" class="form-grid">
+    <h3 class="full-width personal-section-title">Personal Details</h3>
+    <div class="field"><label>Patient ID<input type="text" name="patient_id" value="{{ patient.patient_id if patient else '' }}" {% if patient %}readonly{% endif %}></label></div>
+    <div class="field"><label>Name<input type="text" name="full_name" value="{{ patient.full_name if patient else '' }}" required></label></div>
+    <div class="field"><label>Age<input id="patient-age" type="text" readonly></label></div>
+    <div class="field"><label>Date of Birth<input id="patient-dob" type="date" name="dob" value="{{ patient.dob.isoformat() if patient and patient.dob else '' }}"></label></div>
+    <div class="field"><label>Gender<select name="gender"><option value="">Select gender</option><option value="Male" {% if patient and patient.gender == 'Male' %}selected{% endif %}>Male</option><option value="Female" {% if patient and patient.gender == 'Female' %}selected{% endif %}>Female</option><option value="Other" {% if patient and patient.gender == 'Other' %}selected{% endif %}>Other</option></select></label></div>
+    <div class="field"><label>Contact No<input type="tel" name="phone" value="{{ patient.phone if patient else '' }}"></label></div>
+    <div class="field"><label>Mail ID<input type="email" name="email" value="{{ patient.email if patient else '' }}"></label></div>
+    <div class="field full-width"><label>Location / Address<textarea name="address">{{ patient.address if patient else '' }}</textarea></label></div>
+    <div class="field"><label>Occupation<input type="text" name="occupation" value="{{ patient.occupation if patient else '' }}"></label></div>
+    <div class="field"><label>REE Forma - Known Through<input type="text" name="referral_source" list="referral-source-options" value="{{ patient.referral_source if patient else '' }}"></label>
+        <datalist id="referral-source-options">
+            <option value="Facebook"><option value="Instagram"><option value="Reference"><option value="Website"><option value="Google"><option value="Other">
+        </datalist>
+    </div>
+    <div class="field full-width"><label>Purpose of Visiting</label>
+        <div class="checkbox-row purpose-options">
+            {% set selected_purposes = patient.purpose_of_visit.split(', ') if patient and patient.purpose_of_visit else [] %}
+            <label><input type="checkbox" name="purpose_of_visit" value="Physiotherapy" {% if 'Physiotherapy' in selected_purposes %}checked{% endif %}> Physiotherapy</label>
+            <label><input type="checkbox" name="purpose_of_visit" value="Weight Loss" {% if 'Weight Loss' in selected_purposes %}checked{% endif %}> Weight Loss</label>
+        </div>
+    </div>
+    <div class="field full-width"><label>Concern<textarea name="concern">{{ patient.concern if patient else '' }}</textarea></label></div>
+    <div class="field"><label>Current Height<input type="text" name="current_height" value="{{ patient.current_height if patient else '' }}" placeholder="e.g. 170 cm"></label></div>
+    <div class="field"><label>Current Weight<input type="text" name="current_weight" value="{{ patient.current_weight if patient else '' }}" placeholder="e.g. 65 kg"></label></div>
+    <div class="field full-width"><label>Medical Condition (If Any)<textarea name="existing_conditions">{{ patient.existing_conditions if patient else '' }}</textarea></label></div>
+    <div class="field full-width"><label>Allergies<textarea name="allergies">{{ patient.allergies if patient else '' }}</textarea></label></div>
+    <div class="field"><label>Form Date<input type="date" value="{{ current_date }}" readonly></label></div>
+    <div class="field"><label>Signature (Type Full Name)<input type="text" name="signature" value="{{ patient.signature if patient else '' }}"></label></div>
+    <h4 class="full-width personal-section-title">Additional Clinical Information</h4>
+    <div class="field"><label>Emergency Contact<input type="text" name="emergency_contact" value="{{ patient.emergency_contact if patient else '' }}"></label></div>
+    <div class="field"><label>Referring Doctor<input type="text" name="referring_doctor" value="{{ patient.referring_doctor if patient else '' }}"></label></div>
+    <div class="field full-width"><label>Medical History<textarea name="medical_history">{{ patient.medical_history if patient else '' }}</textarea></label></div>
+    <div class="buttons full-width">
+        <button type="submit" class="primary-btn">Save</button>
+        <a href="{{ url_for('patients') }}" class="secondary-btn">Cancel</a>
+    </div>
+</form>
+<script>
+    const patientDob = document.getElementById('patient-dob');
+    const patientAge = document.getElementById('patient-age');
+
+    function updatePatientAge() {
+        if (!patientDob.value) {
+            patientAge.value = '';
+            return;
+        }
+        const birthDate = new Date(`${patientDob.value}T00:00:00`);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        if (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        patientAge.value = age >= 0 ? age : '';
+    }
+
+    patientDob.addEventListener('change', updatePatientAge);
+    updatePatientAge();
+</script>
+{% endblock %}

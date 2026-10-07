@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>Reports & Analytics</h2></div>
+<div class="stats-grid">
+    <div class="stat-card"><span>Patient Count</span><strong>{{ report_data.patient_count }}</strong></div>
+    <div class="stat-card"><span>Appointment Volume</span><strong>{{ report_data.appointment_count }}</strong></div>
+    <div class="stat-card"><span>Revenue</span><strong>₹{{ '%.2f'|format(report_data.revenue) }}</strong></div>
+    <div class="stat-card"><span>Paid Invoices</span><strong>{{ report_data.paid_invoices }}</strong></div>
+</div>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Report</th><th>Description</th><th>Action</th></tr></thead>
+        <tbody>
+            <tr><td>Monthly Revenue</td><td>Clinical income summary</td><td><a href="{{ url_for('export_report', report_type='revenue') }}">Export</a></td></tr>
+            <tr><td>Appointments</td><td>Booked treatments across the month</td><td><a href="{{ url_for('export_report', report_type='appointments') }}">Export</a></td></tr>
+            <tr><td>Patient Visits</td><td>Visit level patient tracking</td><td><a href="{{ url_for('export_report', report_type='patients') }}">Export</a></td></tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

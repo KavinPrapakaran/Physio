@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" role="img" aria-labelledby="title description">
+  <title id="title">REE Forma Physiotherapy and Wellness Clinic</title>
+  <desc id="description">A flowing gold and burgundy ribbon above the REE Forma clinic wordmark.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff0bd"/>
+      <stop offset="0.5" stop-color="#d8ad60"/>
+      <stop offset="1" stop-color="#9c7135"/>
+    </linearGradient>
+    <linearGradient id="burgundy" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ed4772"/>
+      <stop offset="0.55" stop-color="#b51249"/>
+      <stop offset="1" stop-color="#720b32"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(110 -8) scale(.72)">
+    <path fill="url(#burgundy)" d="M325 16h228c-23 40-48 55-91 55H292c-29 0-52 12-72 37 24-53 58-92 105-92z"/>
+    <path fill="url(#gold)" d="M338 86h161c-20 35-43 49-79 49h-76c-29 0-45 15-45 42v39l-74 48v-89c0-51 42-89 113-89z"/>
+    <path fill="url(#burgundy)" d="M366 151h137c-24 39-51 56-91 56h-49c-19 0-33 8-44 22v-38c0-24 18-40 47-40z"/>
+  </g>
+  <text x="31" y="222" fill="url(#gold)" font-family="Georgia,serif" font-size="93" font-weight="700" letter-spacing="0">REE</text>
+  <text x="292" y="222" fill="url(#burgundy)" font-family="Georgia,serif" font-size="93" font-weight="700" letter-spacing="0">FORMA</text>
+  <text x="34" y="250" fill="#fff4df" font-family="Arial,sans-serif" font-size="15" letter-spacing="0">PHYSIOTHERAPY &amp; WELLNESS CLINIC</text>
+  <path d="M34 258h652" stroke="url(#gold)" stroke-width="1.5"/>
+  <text x="75" y="278" fill="#fff4df" font-family="Arial,sans-serif" font-size="11" letter-spacing="0">RESTORE  |  REBUILD  |  RESHAPE  |  REFORM</text>
+</svg>

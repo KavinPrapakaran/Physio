@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>Service Packages</h2>{% if has_permission('package_add') %}<a class="primary-btn" href="{{ url_for('new_package') }}">Add Package</a>{% endif %}</div>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Name</th><th>Price</th><th>Sessions</th><th>Validity Days</th><th>Status</th><th>Treatment</th></tr></thead>
+        <tbody>
+            {% for pkg in packages %}
+            <tr>
+                <td>{{ pkg.name }}</td>
+                <td>₹{{ '%.2f'|format(pkg.price) }}</td>
+                <td>{{ pkg.session_count }}</td>
+                <td>{{ pkg.validity_days }}</td>
+                <td>{{ 'Active' if pkg.is_active else 'Inactive' }}</td>
+                <td><a href="{{ url_for('edit_package', package_id=pkg.id) }}">Edit</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

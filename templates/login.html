@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block auth_content %}
+<div class="login-wrapper">
+    <div class="login-box">
+        <div class="login-brand">REE Forma</div>
+        <h2>Clinic Management Login</h2>
+        <form method="post">
+            <label>
+                Username
+                <input type="text" name="username" required>
+            </label>
+            <label>
+                Password
+                <input type="password" name="password" required>
+            </label>
+            <button type="submit" class="primary-btn">Login</button>
+        </form>
+        <p class="muted-text">Default admin account: admin / admin123</p>
+    </div>
+</div>
+{% endblock %}

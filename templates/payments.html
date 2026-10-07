@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>Payments</h2></div>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Invoice</th><th>Patient</th><th>Amount</th><th>Payment Method</th><th>Date</th></tr></thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.invoice_number }}</td>
+                <td>{{ payment.patient_name }}</td>
+                <td>₹{{ '%.2f'|format(payment.amount) }}</td>
+                <td>{{ payment.payment_method }}</td>
+                <td>{{ payment.payment_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

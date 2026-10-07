@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ patient.full_name }}</h2>
+    {% if has_permission('patient_edit') %}
+    <a class="primary-btn" href="{{ url_for('edit_patient', patient_id=patient.id) }}">Edit Patient</a>
+    {% endif %}
+</div>
+<div class="detail-grid">
+    <div class="card">
+        <h3>Patient Information</h3>
+        <p><strong>Patient ID:</strong> {{ patient.patient_id }}</p>
+        <p><strong>DOB:</strong> {{ patient.dob or '-' }}</p>
+        <p><strong>Age:</strong> {{ patient_age if patient_age is not none else '-' }}</p>
+        <p><strong>Gender:</strong> {{ patient.gender or '-' }}</p>
+        <p><strong>Phone:</strong> {{ patient.phone or '-' }}</p>
+        <p><strong>Email:</strong> {{ patient.email or '-' }}</p>
+        <p><strong>Address:</strong> {{ patient.address or '-' }}</p>
+        <p><strong>Occupation:</strong> {{ patient.occupation or '-' }}</p>
+        <p><strong>Known Through:</strong> {{ patient.referral_source or '-' }}</p>
+        <p><strong>Purpose of Visiting:</strong> {{ patient.purpose_of_visit or '-' }}</p>
+        <p><strong>Concern:</strong> {{ patient.concern or '-' }}</p>
+        <p><strong>Current Height:</strong> {{ patient.current_height or '-' }}</p>
+        <p><strong>Current Weight:</strong> {{ patient.current_weight or '-' }}</p>
+        <p><strong>Signature:</strong> {{ patient.signature or '-' }}</p>
+        <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact or '-' }}</p>
+        <p><strong>Referring Doctor:</strong> {{ patient.referring_doctor or '-' }}</p>
+    </div>
+    <div class="card">
+        <h3>Clinical Details</h3>
+        <p><strong>Medical History:</strong> {{ patient.medical_history or '-' }}</p>
+        <p><strong>Existing Conditions:</strong> {{ patient.existing_conditions or '-' }}</p>
+        <p><strong>Allergies:</strong> {{ patient.allergies or '-' }}</p>
+    </div>
+</div>
+<h3>Appointments</h3>
+{% if appointments %}
+<ul class="list-group">
+    {% for item in appointments %}
+    <li>{{ item.appointment_date }} • {{ item.appointment_time }} • {{ item.physiotherapist_name }} • {{ item.status }}</li>
+    {% endfor %}
+</ul>
+{% else %}<p>No appointments recorded.</p>{% endif %}
+<h3>Assessments</h3>
+{% if assessments %}
+<ul class="list-group">
+    {% for item in assessments %}
+    <li><a href="{{ url_for('assessment_detail', assessment_id=item.id) }}">{{ item.assessment_date.date() }}</a> • {{ item.chief_complaint or 'Assessment' }}</li>
+    {% endfor %}
+</ul>
+{% else %}<p>No assessments recorded.</p>{% endif %}
+<h3>Treatments</h3>
+{% if treatments %}
+<ul class="list-group">
+    {% for item in treatments %}
+    <li>{{ item.date }} • {{ item.physiotherapist_name }} • {{ item.treatment_performed }}</li>
+    {% endfor %}
+</ul>
+{% else %}<p>No treatment records.</p>{% endif %}
+{% endblock %}

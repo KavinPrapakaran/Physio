@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>Billing & Invoices</h2>{% if has_permission('billing_add') %}<a class="primary-btn" href="{{ url_for('new_invoice') }}">Create Invoice</a>{% endif %}</div>
+<div class="billing-summary"><span>Total invoiced <strong>₹{{ '%.2f'|format(total_revenue) }}</strong></span><span>Outstanding <strong>₹{{ '%.2f'|format(pending) }}</strong></span></div>
+{% if is_admin %}
+{% set approval_invoices = invoices|selectattr('discount_approval_status', 'equalto', 'Pending')|list %}
+{% if approval_invoices %}
+<section class="discount-approval-section">
+    <h3>Discount Approval Requests</h3>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Invoice</th><th>Patient</th><th>Package amount</th><th>Discount</th><th>Net amount</th><th>Requested by</th><th>Reason</th><th>Decision</th></tr></thead>
+            <tbody>
+                {% for invoice in approval_invoices %}
+                <tr>
+                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.patient_name }}</td>
+                    <td>₹{{ '%.2f'|format(invoice.total_amount) }}</td>
+                    <td>{{ '%.2f'|format(invoice.discount_percentage) }}% (₹{{ '%.2f'|format(invoice.discount) }})</td>
+                    <td>₹{{ '%.2f'|format(invoice.total_amount - invoice.discount) }}</td>
+                    <td>{{ invoice.discount_requested_by.full_name if invoice.discount_requested_by else '-' }}</td>
+                    <td>{{ invoice.discount_request_note or '-' }}</td>
+                    <td>
+                        <form class="discount-review-form" method="post" action="{{ url_for('review_invoice_discount', invoice_id=invoice.id) }}">
+                            <input type="text" name="review_note" placeholder="Decision note">
+                            <button class="approve-discount-button" type="submit" name="action" value="approve">Approve</button>
+                            <button class="reject-discount-button" type="submit" name="action" value="reject">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+{% endif %}
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Invoice #</th><th>Patient</th><th>Package amount</th><th>Discount</th><th>Net due</th><th>Status</th><th>Due Date</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for invoice in invoices %}
+            <tr>
+                <td>{{ invoice.invoice_number }}</td>
+                <td>{{ invoice.patient_name }}</td>
+                <td>₹{{ '%.2f'|format(invoice.total_amount) }}</td>
+                <td>{{ '%.2f'|format(invoice.discount_percentage) }}% (₹{{ '%.2f'|format(invoice.discount) }})</td>
+                <td>₹{{ '%.2f'|format(invoice.total_amount - invoice.discount) }}</td>
+                <td><span class="invoice-status invoice-status-{{ invoice.status|lower|replace(' ', '-') }}">{{ invoice.status }}</span>{% if invoice.discount_approval_status == 'Pending' %}<br><small>Manager approval required</small>{% endif %}</td>
+                <td>{{ invoice.due_date }}</td>
+                <td>
+                    <a href="{{ url_for('invoice_detail', invoice_id=invoice.id) }}">View</a>
+                    {% if has_permission('billing_add') and invoice.paid_amount == 0 and invoice.status in ['Pending', 'Pending Approval', 'Discount Rejected'] %}<a href="{{ url_for('edit_invoice', invoice_id=invoice.id) }}">Revise</a>{% endif %}
+                    {% if has_permission('payment_add') and invoice.balance_amount > 0 and invoice.discount_approval_status != 'Pending' and invoice.status not in ['Pending Approval', 'Discount Rejected', 'Paid'] %}
+                    <form class="invoice-complete-form" method="post" action="{{ url_for('complete_invoice', invoice_id=invoice.id) }}">
+                        <select name="payment_method" aria-label="Payment method" required><option value="">Payment method</option><option>Cash</option><option>Card</option><option>UPI</option><option>Bank Transfer</option></select>
+                        <button class="invoice-complete-button" type="submit">Mark paid</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

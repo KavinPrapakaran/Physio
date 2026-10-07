@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>Audit Logs</h2></div>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Time</th><th>User</th><th>Treatment</th><th>Details</th></tr></thead>
+        <tbody>
+            {% for entry in logs %}
+            <tr>
+                <td>{{ entry.timestamp }}</td>
+                <td>{{ entry.user.full_name if entry.user else 'System' }}</td>
+                <td>{{ entry.action }}</td>
+                <td>{{ entry.details or '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

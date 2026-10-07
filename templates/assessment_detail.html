@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <h2>Assessment Details</h2>
+    {% if has_permission('pdf_generation') %}<a class="primary-btn" href="{{ url_for('assessment_pdf', assessment_id=assessment.id) }}">Download PDF</a>{% endif %}
+</div>
+<div class="detail-grid">
+    <div class="card">
+        <h3>Patient</h3>
+        <p><strong>Name:</strong> {{ assessment.patient_name }}</p>
+        <p><strong>Patient ID:</strong> {{ assessment.patient.patient_id if assessment.patient else '-' }}</p>
+        <p><strong>Phone:</strong> {{ assessment.patient.phone if assessment.patient and assessment.patient.phone else '-' }}</p>
+        <p><strong>Age at Assessment:</strong> {{ assessment.assessment_age if assessment.assessment_age is not none else '-' }}</p>
+        <p><strong>Gender:</strong> {{ assessment.assessment_gender or '-' }}</p>
+        <p><strong>Type:</strong> {{ assessment.assessment_type or 'Physiotherapy Assessment' }}</p>
+        <p><strong>Date:</strong> {{ assessment.assessment_date }}</p>
+        <p><strong>Chief Complaint:</strong> {{ assessment.chief_complaint or '-' }}</p>
+        <p><strong>Diagnosis:</strong> {{ assessment.diagnosis or '-' }}</p>
+    </div>
+    <div class="card">
+        <h3>Clinical Notes</h3>
+        <p>{{ assessment.physiotherapist_notes or 'No notes entered.' }}</p>
+    </div>
+</div>
+<div class="card"><h3>Evaluation</h3>
+<p><strong>Present History:</strong> {{ assessment.present_history or '-' }}</p>
+<p><strong>Past Medical History:</strong> {{ assessment.past_medical_history or '-' }}</p>
+<h4>Symptoms</h4>
+<p><strong>Site:</strong> {{ assessment.pain_location or '-' }}</p>
+<p><strong>Onset:</strong> {{ assessment.symptom_onset or '-' }}</p>
+<p><strong>Duration:</strong> {{ assessment.pain_duration or '-' }}</p>
+<p><strong>Type:</strong> {{ assessment.pain_type or '-' }}</p>
+<p><strong>Pain Intensity:</strong> {{ assessment.pain_intensity or '-' }}</p>
+<p><strong>Aggravating Factors:</strong> {{ assessment.aggravating_factors or '-' }}</p>
+<p><strong>Relieving Factors:</strong> {{ assessment.relieving_factors or '-' }}</p>
+<h4>Higher Functions</h4>
+<p><strong>GCS:</strong> {{ assessment.gcs_score if assessment.gcs_score is not none else '-' }}</p>
+<p><strong>Superficial Sensation:</strong> {{ assessment.superficial_sensation or '-' }}</p>
+<p><strong>Deep Sensation:</strong> {{ assessment.deep_sensation or '-' }}</p>
+<h4>Reflex</h4>
+<p><strong>Right Upper Limb:</strong> {{ assessment.reflex_right_upper_limb or '-' }}</p>
+<p><strong>Right Lower Limb:</strong> {{ assessment.reflex_right_lower_limb or '-' }}</p>
+<p><strong>Left Upper Limb:</strong> {{ assessment.reflex_left_upper_limb or '-' }}</p>
+<p><strong>Left Lower Limb:</strong> {{ assessment.reflex_left_lower_limb or '-' }}</p>
+<p><strong>Muscles Examined:</strong> {{ assessment.reflex_muscles_examined or '-' }}</p>
+<p><strong>Muscle Strength Findings:</strong> {{ assessment.muscle_strength or '-' }}</p>
+<p><strong>MMT Scale:</strong> {{ assessment.muscle_strength_mmt or '-' }}</p>
+<p><strong>Functional Assessment:</strong> {{ assessment.functional_assessment or '-' }}</p>
+<p><strong>Treatment Goals:</strong> {{ assessment.treatment_goals or '-' }}</p>
+</div>
+{% if assessment.treatment_plan_entries %}
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>S.No</th><th>Treatment</th><th>Date</th></tr></thead>
+        <tbody>
+            {% for entry in treatment_plan_entries %}
+            <tr><td>{{ loop.index }}</td><td>{{ entry.treatment or '-' }}</td><td>{{ entry.date or '-' }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

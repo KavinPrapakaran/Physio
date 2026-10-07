@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>Permissions for {{ user.full_name }}</h2></div>
+<form method="post" class="form-grid">
+    {% for permission in permissions %}
+    <label class="checkbox-row"><input type="checkbox" name="permission_ids" value="{{ permission.id }}" {% if permission.id in user_permission_ids %}checked{% endif %}> {{ permission.name }}</label>
+    {% endfor %}
+    <div class="buttons full-width"><button type="submit" class="primary-btn">Save</button><a href="{{ url_for('staff_list') }}" class="secondary-btn">Cancel</a></div>
+</form>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <h2>Dashboard</h2>
+</div>
+<div class="stats-grid">
+    <div class="stat-card"><span>Total Patients</span><strong>{{ stats.total_patients }}</strong></div>
+    <div class="stat-card"><span>Today's Appointments</span><strong>{{ stats.today_appointments }}</strong></div>
+    <div class="stat-card"><span>Upcoming Appointments</span><strong>{{ stats.upcoming_appointments }}</strong></div>
+    <div class="stat-card"><span>Completed Appointments</span><strong>{{ stats.completed_appointments }}</strong></div>
+    <div class="stat-card"><span>Cancelled Appointments</span><strong>{{ stats.cancelled_appointments }}</strong></div>
+    <div class="stat-card"><span>Active Packages</span><strong>{{ stats.active_packages }}</strong></div>
+    <div class="stat-card"><span>Pending Payments</span><strong>{{ stats.pending_payments }}</strong></div>
+    <div class="stat-card"><span>Today's Revenue</span><strong>₹{{ '%.2f'|format(stats.todays_revenue) }}</strong></div>
+    <div class="stat-card"><span>Monthly Revenue</span><strong>₹{{ '%.2f'|format(stats.monthly_revenue) }}</strong></div>
+    <div class="stat-card"><span>New Patients</span><strong>{{ stats.new_patients }}</strong></div>
+    <div class="stat-card"><span>Follow-up Appointments</span><strong>{{ stats.followups }}</strong></div>
+</div>
+<section class="revenue-grid" aria-label="Revenue graphs">
+    {% for title, period, revenue_series in [
+        ('Weekly Revenue', 'Last 7 days', weekly_revenue),
+        ('Monthly Revenue', 'Last 12 months', monthly_revenue)
+    ] %}
+    <div class="revenue-chart">
+        <div class="revenue-chart-header">
+            <h3>{{ title }}</h3>
+            <span>{{ period }}</span>
+        </div>
+        <div class="revenue-plot{% if loop.index == 1 %} revenue-plot-weekly{% endif %}" role="img" aria-label="{{ title }} totals in rupees">
+            {% for item in revenue_series %}
+            <div class="revenue-column" title="{{ item.date }}: ₹{{ '%.2f'|format(item.value) }}">
+                <div class="revenue-bar-track">
+                    <div class="revenue-bar" style="height: {{ item.height }}%"></div>
+                </div>
+                <span class="revenue-label">{{ item.label }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}

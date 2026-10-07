@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>{{ form_title }}</h2></div>
+<form method="post" class="form-grid">
+    <div class="field"><label>Patient<select name="patient_id" required>
+        {% for patient in patients %}
+        <option value="{{ patient.id }}" {% if appointment and appointment.patient_id == patient.id %}selected{% endif %}>{{ patient.full_name }}</option>
+        {% endfor %}
+    </select></label></div>
+    <div class="field"><label>Appointment Category<select name="appointment_category" required>
+        {% for category in appointment_categories %}
+        <option value="{{ category }}" {% if appointment and appointment.appointment_category == category %}selected{% elif not appointment and loop.first %}selected{% endif %}>{{ category }}</option>
+        {% endfor %}
+    </select></label></div>
+    <div class="field"><label>Physiotherapist<input type="text" name="physiotherapist_name" list="appointment-staff-list" value="{{ appointment.physiotherapist_name if appointment else '' }}" required></label>
+        <datalist id="appointment-staff-list">{% for staff_name in physiotherapists %}<option value="{{ staff_name }}"></option>{% endfor %}</datalist>
+    </div>
+    <div class="field"><label>Appointment Date<input type="date" name="appointment_date" value="{{ appointment.appointment_date.isoformat() if appointment and appointment.appointment_date else '' }}" required></label></div>
+    <div class="field"><label>Appointment Time<input id="appointment-start-time" type="time" name="appointment_time" value="{{ appointment.appointment_time if appointment else '' }}" required></label></div>
+    <div class="field"><label>End Time<input id="appointment-end-time" type="time" name="appointment_end_time" value="{{ appointment.appointment_end_time if appointment and appointment.appointment_end_time else '' }}" required></label></div>
+    <div class="field"><label>Appointment Type<select name="appointment_type">
+        <option value="Consultation" {% if appointment and appointment.appointment_type == 'Consultation' %}selected{% endif %}>Consultation</option>
+        <option value="Assessment" {% if appointment and appointment.appointment_type == 'Assessment' %}selected{% endif %}>Assessment</option>
+        <option value="Follow-up" {% if appointment and appointment.appointment_type == 'Follow-up' %}selected{% endif %}>Follow-up</option>
+        <option value="Treatment" {% if appointment and appointment.appointment_type == 'Treatment' %}selected{% endif %}>Treatment</option>
+        <option value="Rescheduled" {% if appointment and appointment.appointment_type == 'Rescheduled' %}selected{% endif %}>Rescheduled</option>
+    </select></label></div>
+    <div class="field"><label>Status<select id="appointment-status" class="appointment-status-select" name="status">
+        <option value="Scheduled" {% if not appointment or appointment.status == 'Scheduled' %}selected{% endif %}>Scheduled</option>
+        <option value="Confirmed" {% if appointment and appointment.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+        <option value="Completed" {% if appointment and appointment.status == 'Completed' %}selected{% endif %}>Completed</option>
+        <option value="Cancelled" {% if appointment and appointment.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+        <option value="Rescheduled" {% if appointment and appointment.status == 'Rescheduled' %}selected{% endif %}>Rescheduled</option>
+        <option value="No-show" {% if appointment and appointment.status == 'No-show' %}selected{% endif %}>No-show</option>
+    </select></label></div>
+    <div class="field full-width"><label>Notes<textarea name="notes">{{ appointment.notes if appointment else '' }}</textarea></label></div>
+    <div class="buttons full-width">
+        <button type="submit" class="primary-btn">Save</button>
+        <a href="{{ url_for('appointments') }}" class="secondary-btn">Cancel</a>
+    </div>
+</form>
+<script>
+    const appointmentStatus = document.getElementById('appointment-status');
+    const statusClasses = ['status-scheduled', 'status-confirmed', 'status-completed', 'status-cancelled', 'status-noshow', 'status-rescheduled'];
+
+    function updateAppointmentStatusColor() {
+        appointmentStatus.classList.remove(...statusClasses);
+        appointmentStatus.classList.add(`status-${appointmentStatus.value.toLowerCase().replace('-', '')}`);
+    }
+
+    appointmentStatus.addEventListener('change', updateAppointmentStatusColor);
+    updateAppointmentStatusColor();
+
+    const appointmentStartTime = document.getElementById('appointment-start-time');
+    const appointmentEndTime = document.getElementById('appointment-end-time');
+
+    function suggestAppointmentEndTime() {
+        if (!appointmentStartTime.value || appointmentEndTime.value) return;
+        const [hours, minutes] = appointmentStartTime.value.split(':').map(Number);
+        const end = new Date();
+        end.setHours(hours, minutes + 60, 0, 0);
+        appointmentEndTime.value = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
+    }
+
+    appointmentStartTime.addEventListener('change', () => {
+        appointmentEndTime.value = '';
+        suggestAppointmentEndTime();
+    });
+    suggestAppointmentEndTime();
+</script>
+{% endblock %}

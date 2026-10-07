@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>New Assessment</h2></div>
+<form method="post" class="form-grid">
+    <div class="field"><label>Patient<select id="assessment-patient" name="patient_id" required>
+        {% for patient in patients %}<option value="{{ patient.id }}" data-patient-id="{{ patient.patient_id }}" data-phone="{{ patient.phone or '' }}" data-dob="{{ patient.dob.isoformat() if patient.dob else '' }}" data-gender="{{ patient.gender or '' }}" {% if loop.first %}selected{% endif %}>{{ patient.full_name }}</option>{% endfor %}
+    </select></label></div>
+    <div class="field"><label>Assessment Type<select name="assessment_type">
+        <option value="Physiotherapy Assessment">Physiotherapy Assessment</option>
+        <option value="Weight Loss Assessment">Weight Loss Assessment</option>
+    </select></label></div>
+    <div class="field"><label>Patient ID<input id="assessment-patient-id" type="text" value="{{ patients[0].patient_id if patients else '' }}" readonly></label></div>
+    <div class="field"><label>Phone Number<input id="assessment-patient-phone" type="text" value="{{ patients[0].phone if patients and patients[0].phone else '' }}" readonly></label></div>
+    <div class="field"><label>Age<input id="assessment-patient-age" type="text" readonly></label></div>
+    <div class="field"><label>Gender<input id="assessment-patient-gender" type="text" value="{{ patients[0].gender if patients and patients[0].gender else '' }}" readonly></label></div>
+    <div class="field"><label>Date<input type="date" name="assessment_date"></label></div>
+    <div class="field full-width"><label>Chief Complaint<textarea name="chief_complaint"></textarea></label></div>
+    <div class="field full-width"><label>Present History<textarea name="present_history"></textarea></label></div>
+    <div class="field full-width"><label>Past Medical History<textarea name="past_medical_history"></textarea></label></div>
+    <h3 class="full-width">Symptoms</h3>
+    <div class="field"><label>Site<input type="text" name="pain_location"></label></div>
+    <div class="field"><label>Onset<select name="symptom_onset">
+        <option value="">Select onset</option>
+        <option>Sudden</option><option>Gradual</option><option>Insidious</option><option>Recurrent</option>
+    </select></label></div>
+    <div class="field"><label>Duration<input type="text" name="pain_duration" placeholder="e.g. 2 weeks"></label></div>
+    <div class="field"><label>Type<select name="pain_type">
+        <option value="">Select type</option>
+        <option>Sharp</option><option>Dull</option><option>Aching</option><option>Burning</option>
+        <option>Shooting</option><option>Throbbing</option><option>Cramping</option><option>Other</option>
+    </select></label></div>
+    <div class="field"><label>Pain Intensity (0-10)<select name="pain_intensity">
+        <option value="">Select intensity</option>
+        {% for score in range(0, 11) %}<option value="{{ score }}">{{ score }}</option>{% endfor %}
+    </select></label></div>
+    <div class="field full-width"><label>Aggravating Factors<textarea name="aggravating_factors"></textarea></label></div>
+    <div class="field full-width"><label>Relieving Factors<textarea name="relieving_factors"></textarea></label></div>
+    <h3 class="full-width">Higher Functions</h3>
+    <div class="field"><label>GCS Score<select name="gcs_score">
+        <option value="">Select GCS score</option>
+        {% for score in range(3, 16) %}<option value="{{ score }}">{{ score }}</option>{% endfor %}
+    </select></label></div>
+    <h4 class="full-width">Sensations</h4>
+    <div class="field"><label>Superficial<select name="superficial_sensation">
+        <option value="">Select finding</option>
+        <option>Intact</option><option>Reduced</option><option>Absent</option><option>Altered</option>
+    </select></label></div>
+    <div class="field"><label>Deep<select name="deep_sensation">
+        <option value="">Select finding</option>
+        <option>Intact</option><option>Reduced</option><option>Absent</option><option>Altered</option>
+    </select></label></div>
+    <h3 class="full-width">Reflex</h3>
+    <h4 class="full-width">Right</h4>
+    <div class="field"><label>Upper Limb<select name="reflex_right_upper_limb">
+        <option value="">Select grade</option>
+        <option value="0 - Absent">0 - Absent</option><option value="1+ - Diminished">1+ - Diminished</option>
+        <option value="2+ - Normal">2+ - Normal</option><option value="3+ - Brisk">3+ - Brisk</option>
+        <option value="4+ - Clonus">4+ - Clonus</option>
+    </select></label></div>
+    <div class="field"><label>Lower Limb<select name="reflex_right_lower_limb">
+        <option value="">Select grade</option>
+        <option value="0 - Absent">0 - Absent</option><option value="1+ - Diminished">1+ - Diminished</option>
+        <option value="2+ - Normal">2+ - Normal</option><option value="3+ - Brisk">3+ - Brisk</option>
+        <option value="4+ - Clonus">4+ - Clonus</option>
+    </select></label></div>
+    <h4 class="full-width">Left</h4>
+    <div class="field"><label>Upper Limb<select name="reflex_left_upper_limb">
+        <option value="">Select grade</option>
+        <option value="0 - Absent">0 - Absent</option><option value="1+ - Diminished">1+ - Diminished</option>
+        <option value="2+ - Normal">2+ - Normal</option><option value="3+ - Brisk">3+ - Brisk</option>
+        <option value="4+ - Clonus">4+ - Clonus</option>
+    </select></label></div>
+    <div class="field"><label>Lower Limb<select name="reflex_left_lower_limb">
+        <option value="">Select grade</option>
+        <option value="0 - Absent">0 - Absent</option><option value="1+ - Diminished">1+ - Diminished</option>
+        <option value="2+ - Normal">2+ - Normal</option><option value="3+ - Brisk">3+ - Brisk</option>
+        <option value="4+ - Clonus">4+ - Clonus</option>
+    </select></label></div>
+    <div class="field full-width"><label>Muscles Examined<textarea name="reflex_muscles_examined" placeholder="Enter the muscles examined"></textarea></label></div>
+    <div class="field full-width"><label>Posture Assessment<textarea name="posture_assessment"></textarea></label></div>
+    <div class="field full-width"><label>Range of Motion<textarea name="range_of_motion"></textarea></label></div>
+    <div class="field full-width"><label>Muscle Strength<textarea name="muscle_strength"></textarea></label></div>
+    <div class="field"><label>MMT Scale<select name="muscle_strength_mmt">
+        <option value="">Select MMT grade</option>
+        <option value="0 - No contraction">0 - No contraction</option>
+        <option value="1 - Trace contraction">1 - Trace contraction</option>
+        <option value="2 - Full range with gravity eliminated">2 - Full range with gravity eliminated</option>
+        <option value="3 - Full range against gravity">3 - Full range against gravity</option>
+        <option value="4 - Against some resistance">4 - Against some resistance</option>
+        <option value="5 - Normal strength">5 - Normal strength</option>
+    </select></label></div>
+    <div class="field full-width"><label>Tenderness<textarea name="tenderness"></textarea></label></div>
+    <div class="field full-width"><label>Palpation<textarea name="palpation"></textarea></label></div>
+    <div class="field full-width"><label>Balance<textarea name="balance"></textarea></label></div>
+    <div class="field full-width"><label>Gait Analysis<textarea name="gait_analysis"></textarea></label></div>
+    <div class="field full-width"><label>Posture<textarea name="posture"></textarea></label></div>
+    <div class="field full-width"><label>Special Tests<textarea name="special_tests"></textarea></label></div>
+    <div class="field full-width"><label>Investigation<textarea name="investigation"></textarea></label></div>
+    <div class="field full-width"><label>Diagnosis<textarea name="diagnosis"></textarea></label></div>
+    <div class="field full-width"><label>Problem List<textarea name="problem_list"></textarea></label></div>
+    <div class="field full-width"><label>Goal<textarea name="goal"></textarea></label></div>
+    <div class="field full-width"><label>Short-term Goals<textarea name="short_term_goals"></textarea></label></div>
+    <div class="field full-width"><label>Long-term Goals<textarea name="long_term_goals"></textarea></label></div>
+    <h3 class="full-width">Treatment Plan</h3>
+    <div class="table-wrap full-width">
+        <table class="treatment-plan-table">
+            <thead><tr><th scope="col">S.No</th><th scope="col">Treatment</th><th scope="col">Date</th><th scope="col">Action</th></tr></thead>
+            <tbody id="treatment-plan-rows">
+                <tr>
+                    <td class="treatment-plan-serial">1</td>
+                    <td><input type="text" name="treatment_plan_treatment[]" aria-label="Treatment"></td>
+                    <td><input type="date" name="treatment_plan_date[]" aria-label="Treatment date"></td>
+                    <td><button type="button" class="secondary-btn treatment-plan-remove">Remove</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="full-width"><button type="button" id="add-treatment-plan-row" class="secondary-btn">Add treatment</button></div>
+    <div class="field"><label>Follow-up Date<input type="date" name="follow_up_date"></label></div>
+    <div class="buttons full-width"><button type="submit" class="primary-btn">Save Assessment</button><a href="{{ url_for('assessments') }}" class="secondary-btn">Cancel</a></div>
+</form>
+<script>
+    const patientSelect = document.getElementById('assessment-patient');
+    const patientIdField = document.getElementById('assessment-patient-id');
+    const patientPhoneField = document.getElementById('assessment-patient-phone');
+    const patientAgeField = document.getElementById('assessment-patient-age');
+    const patientGenderField = document.getElementById('assessment-patient-gender');
+    const assessmentDateField = document.querySelector('[name="assessment_date"]');
+
+    function updatePatientDetails() {
+        const selectedPatient = patientSelect.selectedOptions[0];
+        patientIdField.value = selectedPatient?.dataset.patientId || '';
+        patientPhoneField.value = selectedPatient?.dataset.phone || '';
+        patientGenderField.value = selectedPatient?.dataset.gender || '';
+        const birthDate = selectedPatient?.dataset.dob;
+        if (!birthDate) {
+            patientAgeField.value = '';
+            return;
+        }
+
+        const ageDate = assessmentDateField.value ? new Date(`${assessmentDateField.value}T00:00:00`) : new Date();
+        const birth = new Date(`${birthDate}T00:00:00`);
+        let age = ageDate.getFullYear() - birth.getFullYear();
+        if (ageDate.getMonth() < birth.getMonth() || (ageDate.getMonth() === birth.getMonth() && ageDate.getDate() < birth.getDate())) {
+            age--;
+        }
+        patientAgeField.value = age >= 0 ? age : '';
+    }
+
+    patientSelect.addEventListener('change', updatePatientDetails);
+    assessmentDateField.addEventListener('change', updatePatientDetails);
+    updatePatientDetails();
+
+    const treatmentPlanRows = document.getElementById('treatment-plan-rows');
+    const addTreatmentPlanRow = document.getElementById('add-treatment-plan-row');
+
+    function updateTreatmentPlanSerials() {
+        treatmentPlanRows.querySelectorAll('tr').forEach((row, index) => {
+            row.querySelector('.treatment-plan-serial').textContent = index + 1;
+        });
+    }
+
+    addTreatmentPlanRow.addEventListener('click', () => {
+        const row = treatmentPlanRows.querySelector('tr').cloneNode(true);
+        row.querySelectorAll('input').forEach((input) => { input.value = ''; });
+        treatmentPlanRows.appendChild(row);
+        updateTreatmentPlanSerials();
+    });
+
+    treatmentPlanRows.addEventListener('click', (event) => {
+        if (event.target.closest('.treatment-plan-remove') && treatmentPlanRows.rows.length > 1) {
+            event.target.closest('tr').remove();
+            updateTreatmentPlanSerials();
+        }
+    });
+</script>
+{% endblock %}

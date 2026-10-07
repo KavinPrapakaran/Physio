@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>{% if invoice %}Revise Invoice{% else %}Create Invoice{% endif %}</h2></div>
+<form method="post" class="form-grid">
+    <div class="field"><label>Patient<select name="patient_id" required>
+        {% for patient in patients %}<option value="{{ patient.id }}" {% if invoice and invoice.patient_id == patient.id %}selected{% endif %}>{{ patient.full_name }}</option>{% endfor %}
+    </select></label></div>
+    <div class="field"><label>Invoice Number<input type="text" name="invoice_number" value="{{ invoice.invoice_number if invoice else '' }}" {% if invoice %}readonly{% endif %} required></label></div>
+    <div class="field"><label>Total Package Amount (₹)<input id="invoice-total" type="number" step="0.01" min="0.01" name="total_amount" value="{{ invoice.total_amount if invoice else '' }}" required></label></div>
+    <div class="field"><label>Discount (%)<input id="invoice-discount-percent" type="number" step="0.01" min="0" max="100" name="discount_percentage" value="{{ invoice.discount_percentage if invoice else '0' }}" required></label><small class="discount-policy-note">Discounts above 31% require management approval before billing can proceed.</small></div>
+    <div class="field full-width"><div id="invoice-discount-summary" class="discount-summary" aria-live="polite"></div></div>
+    <div id="discount-approval-note" class="field full-width" hidden><label>Reason for discount request<textarea name="discount_request_note">{{ invoice.discount_request_note if invoice else '' }}</textarea></label></div>
+    <div class="field"><label>Invoice Date<input type="date" name="due_date" value="{{ invoice.due_date.isoformat() if invoice and invoice.due_date else '' }}"></label></div>
+    <div class="field full-width"><label>Description<textarea name="description">{{ invoice.notes if invoice else '' }}</textarea></label></div>
+    <div class="buttons full-width"><button type="submit" class="primary-btn">{% if invoice %}Save Revision{% else %}Save Invoice{% endif %}</button><a href="{{ url_for('billing') }}" class="secondary-btn">Cancel</a></div>
+</form>
+<script>
+    const invoiceTotal = document.getElementById('invoice-total');
+    const invoiceDiscountPercent = document.getElementById('invoice-discount-percent');
+    const discountSummary = document.getElementById('invoice-discount-summary');
+    const discountApprovalNote = document.getElementById('discount-approval-note');
+
+    function updateDiscountSummary() {
+        const total = Number(invoiceTotal.value) || 0;
+        const percentage = Number(invoiceDiscountPercent.value) || 0;
+        const discount = total * percentage / 100;
+        const net = Math.max(total - discount, 0);
+        discountSummary.textContent = `Discount: ₹${discount.toFixed(2)} · Net amount: ₹${net.toFixed(2)}`;
+        discountApprovalNote.hidden = percentage <= 31;
+        invoiceDiscountPercent.classList.toggle('discount-over-limit', percentage > 31);
+    }
+
+    invoiceTotal.addEventListener('input', updateDiscountSummary);
+    invoiceDiscountPercent.addEventListener('input', updateDiscountSummary);
+    updateDiscountSummary();
+</script>
+{% endblock %}

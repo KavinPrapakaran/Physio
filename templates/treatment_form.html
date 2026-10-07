@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header"><h2>{{ form_title }}</h2></div>
+<form method="post" class="form-grid">
+    <div class="field"><label>Patient<select name="patient_id" required>
+        {% for patient in patients %}<option value="{{ patient.id }}" {% if treatment and treatment.patient_id == patient.id %}selected{% endif %}>{{ patient.full_name }}</option>{% endfor %}
+    </select></label></div>
+    <div class="field"><label>Staff<input type="text" name="physiotherapist_name" list="treatment-staff-list" value="{{ treatment.physiotherapist_name if treatment else '' }}" autocomplete="off" required></label>
+        <datalist id="treatment-staff-list">
+            {% for staff_name in staff_names %}<option value="{{ staff_name }}"></option>{% endfor %}
+        </datalist>
+    </div>
+    <div class="field"><label>Date<input type="date" name="date" value="{{ treatment.date.isoformat() if treatment and treatment.date else '' }}" required></label></div>
+    <div class="field"><label>Treatment Type<input type="text" name="treatment_type" value="{{ treatment.treatment_type if treatment else '' }}" required></label></div>
+    <div class="field"><label>Duration<input type="number" name="duration" value="{{ treatment.duration_minutes if treatment else '' }}" required></label></div>
+    <div class="field full-width"><label>Summary<textarea name="summary">{{ treatment.summary if treatment else '' }}</textarea></label></div>
+    <div class="field full-width"><label>Treatment <textarea name="treatment">{{ treatment.treatment_performed if treatment else '' }}</textarea></label></div>
+    <div class="field full-width"><label>Patient Response<textarea name="patient_response">{{ treatment.patient_response if treatment else '' }}</textarea></label></div>
+    <div class="field full-width"><label>Next Plan<textarea name="next_plan">{{ treatment.next_plan if treatment else '' }}</textarea></label></div>
+    <div class="buttons full-width"><button type="submit" class="primary-btn">Save</button><a href="{{ url_for('treatments') }}" class="secondary-btn">Cancel</a></div>
+</form>
+{% endblock %}
